@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/fetcher');
+mongoose.connect('mongodb://localhost/miniAppChallenge3');
 var dataBase = mongoose.connection;
 dataBase.on('error', console.error.bind(console, 'connection error!'));
 dataBase.once('open', function() {
@@ -15,15 +15,14 @@ let userInfoSchema = mongoose.Schema({
 let User = mongoose.model('user', userInfoSchema);
 
 let saveUser = (data) => {
-	for (var i = 0; i < data.length; i++) {
-		var obj1 = {
-			name: data[i].name,
-			email: data[i].email,
-			password: data[i].password
-		};
-		var savedUser = new User(obj1);
-		savedUser.saveUser();
-	}
+	var savedUser = new User({
+		name: data.name,
+		email: data.email,
+		password: data.password
+	});
+	savedUser.save((cb) => {
+		console.log('saved');
+	});
 };
 
 let userShippingInfoSchema = mongoose.Schema({
@@ -34,42 +33,41 @@ let userShippingInfoSchema = mongoose.Schema({
 	zipCode: { type: Number, trim: true, unique: false }
 });
 
-let Shipping = mongoose.model('shipping', userShippingInfoSchema);
+let Shipping = mongoose.model('Shipping', userShippingInfoSchema);
 
 let saveUserShipping = (data) => {
-	for (var i = 0; i < data.length; i++) {
-		var obj2 = {
-			firstAdress: data[i].firstAdress,
-			secondAdress: data[i].secondAdress,
-			city: data[i].city,
-			state: data[i].state,
-			zipCode: data[i].zipCode
-		};
-		var savedUserShipping = new Shipping(obj2);
-		savedUserShipping.saveUserShipping();
-	}
+	var savedUser = new Shipping({
+		firstAdress: data.firstAdress,
+		secondAdress: data.secondAdress,
+		city: data.city,
+		state: data.state,
+		zipCode: data.zipCode
+	});
+	savedUser.save((cb) => {
+		console.log('saved');
+	});
 };
 
 let userCreditCardInfoSchema = mongoose.Schema({
 	creditCardNumber: { type: Number, trim: true, unique: true },
 	expiryDate: { type: Date, trim: true, unique: false },
-	CCV: { type: Number, trim: true, unique: false },
+	ccv: { type: Number, trim: true, unique: false },
 	billingZipCode: { type: Number, trim: true, unique: false }
 });
 
 let CreditCard = mongoose.model('creditCard', userCreditCardInfoSchema);
 
 let saveUserCreditCard = (data) => {
-	for (var i = 0; i < data.length; i++) {
-		var obj3 = {
-			creditCardNumber: data[i].creditCardNumber,
-			expiryDate: data[i].expiryDate,
-			CCV: data[i].CCV,
-			billingZipCode: data[i].billingZipCode
-		};
-		var savedUserCreditCard = new CreditCard(obj3);
-		savedUserCreditCard.saveUserCreditCard();
-	}
+	var savedUser = new CreditCard({
+		creditCardNumber: data.creditCardNumber,
+		expiryDate: data.expiryDate,
+		ccv: data.ccv,
+		billingZipCode: data.billingZipCode
+	});
+
+	savedUser.save((cb) => {
+		console.log('saved');
+	});
 };
 
 module.exports.saveUser = saveUser;

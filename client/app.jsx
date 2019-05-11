@@ -1,6 +1,3 @@
-// import React from 'react';
-// import $ from 'jquery';
-
 class Main extends React.Component {
 	constructor(props) {
 		super(props);
@@ -36,31 +33,30 @@ class Form1 extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			showComponent2: false
+			showComponent2: false,
+			name: '',
+			email: '',
+			password: ''
 		};
 		this.onButtonClick = this.onButtonClick.bind(this);
 	}
 
 	onButtonClick() {
-		this.setState({
-			showComponent2: true,
-			info: ''
-		});
-	}
-
-	saveFromClient(info) {
-		console.log(`${info} was added `);
-		console.log(info);
+		var { name, email, password } = this.state;
+		var user = { name, email, password };
 		$.ajax({
+			type: 'POST',
 			url: '/user',
-			method: 'POST',
-			data: {
-				name: info,
-				email: info,
-				password: info
-			},
+			data: { user: user },
 			dataType: 'json'
 		});
+		console.log(user);
+		this.setState({
+			showComponent2: true
+		});
+	}
+	changed(e) {
+		this.setState({ [e.target.name]: e.target.value });
 	}
 
 	render() {
@@ -69,27 +65,24 @@ class Form1 extends React.Component {
 				<h2>Please fill in the information below</h2>
 				<form>
 					<input
-						value={this.state.info}
 						name="name"
 						type="name"
 						placeholder="please input your name"
-						onChange={this.onChange}
+						onChange={this.changed.bind(this)}
 					/>{' '}
 					<br /> <br />
 					<input
-						value={this.state.info}
 						name="email"
 						type="email"
 						placeholder="please input your email"
-						onChange={this.onChange}
+						onChange={this.changed.bind(this)}
 					/>{' '}
 					<br /> <br />
 					<input
-						value={this.state.info}
 						name="password"
 						type="password"
 						placeholder="please input your password"
-						onChange={this.onChange}
+						onChange={this.changed.bind(this)}
 					/>
 				</form>
 				<br />
@@ -99,31 +92,77 @@ class Form1 extends React.Component {
 		);
 	}
 }
-// && this.saveFromClient
+
 class Form2 extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			showComponent3: false
+			showComponent3: false,
+			firstAdress: '',
+			secondAdress: '',
+			city: '',
+			state: '',
+			zipcode: ''
 		};
 		this.onButtonClick = this.onButtonClick.bind(this);
 	}
 
 	onButtonClick() {
+		var { firstAdress, secondAdress, city, state, zipcode } = this.state;
+		var shipping = { firstAdress, secondAdress, city, state, zipcode };
+		$.ajax({
+			type: 'POST',
+			url: '/user',
+			data: { shipping: shipping },
+			dataType: 'json'
+		});
+		console.log(shipping);
 		this.setState({
 			showComponent3: true
 		});
+	}
+	changed(e) {
+		this.setState({ [e.target.name]: e.target.value });
 	}
 	render() {
 		return (
 			<div className="main">
 				<h2>Please fill in the shipping information below</h2>
 				<form>
-					<input type="adress" name="firstAdress" placeholder="please input your adress 1" /> <br /> <br />
-					<input type="adress" name="secondAdress" placeholder="please input your adress 2" /> <br /> <br />
-					<input type="city" name="city" placeholder="please input the city" /> <br /> <br />
-					<input type="state" name="state" placeholder="please input the state" /> <br /> <br />
-					<input type="zip code" name="zipCode" placeholder="please input your zip-code" />
+					<input
+						onChange={this.changed.bind(this)}
+						type="adress"
+						name="firstAdress"
+						placeholder="please input your adress 1"
+					/>{' '}
+					<br /> <br />
+					<input
+						onChange={this.changed.bind(this)}
+						type="adress"
+						name="secondAdress"
+						placeholder="please input your adress 2"
+					/>{' '}
+					<br /> <br />
+					<input
+						onChange={this.changed.bind(this)}
+						type="city"
+						name="city"
+						placeholder="please input the city"
+					/>{' '}
+					<br /> <br />
+					<input
+						onChange={this.changed.bind(this)}
+						type="state"
+						name="state"
+						placeholder="please input the state"
+					/>{' '}
+					<br /> <br />
+					<input
+						onChange={this.changed.bind(this)}
+						type="zip code"
+						name="zipcode"
+						placeholder="please input your zip-code"
+					/>
 				</form>
 				<br />
 				<button onClick={this.onButtonClick}>next</button>
@@ -134,28 +173,61 @@ class Form2 extends React.Component {
 }
 
 class Form3 extends React.Component {
-	// constructor(props) {
-	// 	super(props);
-	// 	this.state = {
-	// 		confirm: false
-	// 	};
-	// }
-	// onButtonClick() {
-	// 	confirm: true;
-	// }
+	constructor(props) {
+		super(props);
+		this.state = {
+			creditCardNumber: '',
+			expiryDate: '',
+			ccv: '',
+			billingZipCode: ''
+		};
+		this.onButtonClick = this.onButtonClick.bind(this);
+	}
+	changed(e) {
+		this.setState({ [e.target.name]: e.target.value });
+	}
+
+	onButtonClick() {
+		var that = this;
+		$.ajax({
+			type: 'POST',
+			url: '/user',
+			data: { card: that.state },
+			dataType: 'json'
+		});
+		console.log(this.state);
+	}
+
 	render() {
 		return (
 			<div className="main">
 				<h2>Please fill in your credit card information below</h2>
 				<form>
-					<input type="number" name="creditCardNumber" placeholder="credit card number" /> <br /> <br />
-					<input type="date" name="expiryDate" placeholder="credit card expiry date" /> <br /> <br />
-					<input type="number" name="CVV" placeholder="CVV" /> <br /> <br />
-					<input type="number" name="billingZipCode" placeholder="billing zip code" />
+					<input
+						onChange={this.changed.bind(this)}
+						type="number"
+						name="creditCardNumber"
+						placeholder="credit card number"
+					/>{' '}
+					<br /> <br />
+					<input
+						onChange={this.changed.bind(this)}
+						type="date"
+						name="expiryDate"
+						placeholder="credit card expiry date"
+					/>{' '}
+					<br /> <br />
+					<input onChange={this.changed.bind(this)} type="number" name="ccv" placeholder="CVV" /> <br />{' '}
+					<br />
+					<input
+						onChange={this.changed.bind(this)}
+						type="number"
+						name="billingZipCode"
+						placeholder="billing zip code"
+					/>
 				</form>{' '}
 				<br /> <br />
-				<button>Confirm Purchace</button>
-				{/* {this.state.confirm ? <Menue /> : null} */}
+				<button onClick={this.onButtonClick}>Confirm Purchace</button>
 			</div>
 		);
 	}
